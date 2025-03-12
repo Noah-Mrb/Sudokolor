@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+             xmlns:vm="clr-namespace:VueModele;assembly=VueModele"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Sudokolor.Pages.PageMenu"
+             BackgroundImageSource="background_bois.jpeg"
+             x:DataType="vm:MenuVueModele">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="0">
+            <Image
+                Source="logo.png"
+                HeightRequest="125"
+                Aspect="AspectFit"
+                SemanticProperties.Description="logo de l'application sudokolor" />
+
+            <!-- Rond de chargement -->
+            <ActivityIndicator x:Name="RondDeChargement" IsRunning="False" 
+                               Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
+                               Margin="0,20,0,0"/>
+
+            <StackLayout
+                Grid.Row="1"
+                Margin="0,35,0,30"
+                Spacing="20" >
+                <Button 
+                    x:Name="BoutonLancerPartie"
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_classique}"
+                    Clicked="ReprendrePartie"
+                    IsVisible="{Binding PartieEnCours, Converter={StaticResource InvertedBoolConverter}}"/>
+
+                <Button 
+                    x:Name="BoutonReprendrePartie"
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_reprendre}"
+                    Clicked="ReprendrePartie"
+                    IsVisible="{Binding PartieEnCours}"/>
+
+                <Button 
+                    x:Name="BoutonNouvellePartie"
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_nouvelle}"
+                    Clicked="NouvellePartie"
+                    IsVisible="{Binding PartieEnCours}"/>
+
+                <Frame
+                    Padding="0"
+                    CornerRadius="10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    HasShadow="False"
+                    Margin="5,0">
+                    <Entry
+                        x:Name="saisieGrainePartie"
+                        Text="{Binding Graine, Mode=TwoWay}"
+                        Placeholder="{x:Static resx:AppResources.app_page_jeu_txt_code_partie}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                        FontFamily="OpenSansRegular" FontSize="25" MinimumHeightRequest="44" MinimumWidthRequest="44"
+                        IsTextPredictionEnabled="False"
+                        HorizontalTextAlignment="Center" PlaceholderColor="{x:DynamicResource Gray200}"
+                        MaxLength="20" FontAutoScalingEnabled="False" ClearButtonVisibility="WhileEditing" IsSpellCheckEnabled="False"/>
+                </Frame>
+
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="BtnDebutant"
+                        ImageSource="debutant.svg"
+                        Grid.Column="0" />
+                    <Button
+                        x:Name="BtnIntermediaire"
+                        Style="{StaticResource Inactif}"
+                        ImageSource="intermediaire.svg"
+                        Grid.Column="1" />
+                    <Button
+                        x:Name="BtnAvance"
+                        Style="{StaticResource Inactif}"
+                        ImageSource="avance.svg"
+                        Grid.Column="2" />
+                </Grid>
+
+                <Button                    
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_contre_la_montre}"/>
+
+                <Button
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_historique}" />
+
+                <Button
+                    x:Name="BoutonOptions"
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_options}"
+                    Clicked="Options" />
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

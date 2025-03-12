@@ -1,0 +1,35 @@
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="Sudokolor.Popups.PopupCustomTexteEtOk"
+               Color="Transparent">
+    
+    <Border Stroke="Transparent">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="20"/>
+        </Border.StrokeShape>
+        <Grid MinimumWidthRequest="350"  HorizontalOptions="CenterAndExpand" BackgroundColor="White" Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Texte centré dans la première moitié du haut -->
+            <Label
+                x:Name="LabelTexteAfficher"
+                FontSize="23"
+                Grid.Row="0"
+                HorizontalTextAlignment="Start"
+                VerticalTextAlignment="Center"/>
+
+            <!-- bouton Ok (valider) -->
+            <Button Text="Ok"
+                FontSize="18"
+                Padding="0"
+                Grid.Row="1" HorizontalOptions="End"
+                Clicked="FermerPopup" Margin="0,10,0,0"/>
+        </Grid>
+    </Border>
+
+</toolkit:Popup>

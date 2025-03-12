@@ -1,0 +1,56 @@
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="Sudokolor.Popups.PopupCustomBooleen"
+               Color="Transparent">
+    
+    <Border Stroke="Transparent">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="20"/>
+        </Border.StrokeShape>
+        <Grid MinimumWidthRequest="350" HorizontalOptions="FillAndExpand" BackgroundColor="White" Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Texte centré dans la première moitié du haut -->
+            <Label Text=""
+               x:Name="Texte"
+               FontSize="23"
+               Padding="0, 0, 0, 20"
+               Grid.Row="0"
+               Grid.Column="0"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center" />
+
+            <Grid Grid.Row="2" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- bouton faux -->
+                <Button Text=""
+                x:Name="BoutonFaux"
+                FontSize="18"
+                Padding="0"
+                BackgroundColor="White"
+                TextColor="Red"
+                Grid.Column="0" 
+                Clicked="Faux"/>
+
+                <!-- bouton vrai -->
+                <Button Text=""
+                x:Name="BoutonVrai"
+                FontSize="18"
+                Padding="0"
+                Grid.Column="1"
+                Clicked="Vrai"/>
+            </Grid>
+        </Grid>
+    </Border>
+</toolkit:Popup>

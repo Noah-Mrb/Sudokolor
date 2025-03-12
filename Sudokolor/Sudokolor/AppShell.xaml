@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Sudokolor.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Sudokolor.Pages"
+    xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+    Shell.FlyoutBehavior="Disabled"
+    Title="Sudokolor"
+    Shell.NavBarIsVisible="False">
+
+    <ShellContent
+        Title="{x:Static resx:AppResources.app_page_principale_titre}"
+        ContentTemplate="{DataTemplate local:PageMenu}"
+        Route="PageMenu" />
+    
+    <ShellContent
+        Title="{x:Static resx:AppResources.app_page_jeu_titre}"
+        ContentTemplate="{DataTemplate local:PagePartie}"
+        Route="PagePartie" />
+</Shell>

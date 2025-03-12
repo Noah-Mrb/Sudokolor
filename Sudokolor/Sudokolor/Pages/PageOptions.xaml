@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+             x:Class="Sudokolor.Pages.PageOptions"
+             BackgroundImageSource="background_bois.jpeg">
+    <Grid RowDefinitions="*,Auto" Padding="20">
+        <VerticalStackLayout Spacing="30">
+            <Label Text="{x:Static resx:AppResources.app_page_options_titre}" Style="{StaticResource Titre}" />
+            
+            <StackLayout>
+                <Label Text="{x:Static resx:AppResources.app_page_options_theme}" Style="{StaticResource SousTitre}" />
+                <Picker x:Name="Theme"
+                Title="{x:Static resx:AppResources.app_page_options_theme_selection}"
+                SelectedIndexChanged="ChangeTheme"
+                SelectedItem="{Binding ThemeChoisi}" />
+            </StackLayout>
+            
+            <StackLayout>
+                <Label Text="{x:Static resx:AppResources.app_page_options_langue}" Style="{StaticResource SousTitre}" />
+                <Picker x:Name="Langue"
+                Title="{x:Static resx:AppResources.app_page_options_langue_selection}"
+                SelectedIndexChanged="ChangeLangage"
+                SelectedItem="{Binding LangueChoisie}" />
+                <Label x:Name="alerteLangue" Text="{x:Static resx:AppResources.app_page_options_langue_changee}" Style="{StaticResource TexteAlerte}" />                
+            </StackLayout>
+
+            <!-- Rond de chargement -->
+            <ActivityIndicator x:Name="RondDeChargement" IsRunning="False" 
+                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
+                        Margin="0,20,0,0"/>
+
+
+        </VerticalStackLayout>
+        <Button Text="{x:Static resx:AppResources.app_page_options_retour}"
+                Clicked="RetourAuMenu"
+                x:Name="BoutonRetourMenu"
+                VerticalOptions="EndAndExpand"
+                Margin="0,50,0,0" FlexLayout.AlignSelf="End" />
+    </Grid>
+</ContentPage>

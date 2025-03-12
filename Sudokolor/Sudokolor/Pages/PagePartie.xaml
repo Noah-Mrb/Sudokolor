@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VueModele;assembly=VueModele"
+             xmlns:convertisseurs="clr-namespace:Sudokolor.Convertisseurs"
+             xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+             xmlns:pages="clr-namespace:Sudokolor.Pages"
+             x:Class="Sudokolor.Pages.PagePartie"
+             x:Name="Partie"
+             x:DataType="vm:PartieVueModele"
+             BackgroundImageSource="background_bois.jpeg">
+
+    <ContentPage.Resources>
+        <convertisseurs:ConvertisseurCouleur x:Key="ConvertisseurCouleur"/>
+        <convertisseurs:ConvertisseurChiffre x:Key="ConvertisseurChiffre"/>
+    </ContentPage.Resources>
+
+    <Grid Margin="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Bouton retour + seed + bouton paramètre -->
+        <Grid Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <!-- Bouton retour menu -->
+            <Button x:Name="BoutonRetourMenu" Margin="0,20,0,20" ImageSource="fleche_retour.svg" Clicked="RetourAuMenu"
+                    MinimumWidthRequest="50" Grid.Column="0" />
+            <!-- Labels du code de la partie (seed)-->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <!-- Label du code la partie -->
+                <Label Grid.Row="1" Text="{x:Static resx:AppResources.app_page_jeu_txt_code_partie}"
+                        HorizontalTextAlignment="Center" FontAttributes="Bold" FontSize="20" />
+                <!-- Icone + graine -->
+                <Grid Grid.Row="2" HorizontalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.10*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <!--Icone de partage de la graine-->
+                    <Image Source="icone_partage.svg" Grid.Column="0" Margin="0,0,0,20" />
+                    <!-- (graine) code de la partie -->
+                    <Label Margin="10,0" Grid.Column="1" x:Name="labelGraine" Text="{Binding Graine, Mode=OneWay}"
+                            FontAttributes="Bold" FontSize="16" />
+                    <!-- Gesture Recognizer pour capturer le clic et copier la graine dans le presse papier -->
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CopierGrainePressePapier" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Grid>
+
+            <!--Bouton paramètre à droite -->
+            <Button x:Name="BoutonOptions"  Margin="0,20,0,20" ImageSource="roue_parametre.svg" Grid.Column="2" Clicked="Options" />
+
+        </Grid>
+
+        <!-- Grille de jeu -->
+        <Grid x:Name="GrilleJeu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Margin="10" VerticalOptions="Center" HorizontalOptions="Center">
+            <!-- Définition des colonnes (11 colonnes pour inclure les séparateurs) -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <!-- Séparateur -->
+                <ColumnDefinition Width="2" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <!-- Séparateur -->
+                <ColumnDefinition Width="2" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+
+            </Grid.ColumnDefinitions>
+
+            <!-- Définition des lignes (11 lignes pour inclure les séparateurs) -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <!-- Séparateur -->
+                <RowDefinition Height="2" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <!-- Séparateur -->
+                <RowDefinition Height="2" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+        </Grid>
+
+
+
+
+        <!-- Bouton retour arrière et switch button indice -->
+        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Margin="0,20,0,20" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                ImageSource="retour_arriere.svg"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=RetourCommand}"
+            />
+
+            <Button Grid.Column="1"
+                FontSize="18"
+                Text="{x:Static resx:AppResources.app_popup_soumission_grille_btn_soumettre}"
+                Clicked="AffichagePopupValidationGrille"
+                IsVisible="{Binding ToutesLesCasesSontRemplies}"/>
+
+            <Button Grid.Column="2"
+                ImageSource="ampoule.svg"/>
+
+        </Grid>
+
+        <!-- Grille qui liste les différentes couleurs utilisables automatiquement pour jouer -->
+        <FlexLayout Grid.ColumnSpan="3" Grid.Row="4" BindableLayout.ItemsSource="{Binding Couleurs}" Wrap="Wrap"
+                JustifyContent="SpaceEvenly" AlignItems="Center">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <!-- Le bouton circulaire -->
+                        <Button MinimumHeightRequest="50" MinimumWidthRequest="50" CornerRadius="50"
+                                BackgroundColor="{Binding ., Converter={StaticResource ConvertisseurCouleur}, ConverterParameter={x:Reference Partie}}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=ChangerCouleurActiveCommand}"
+                                CommandParameter="{Binding .}" Clicked="CouleurCliquee"
+                                Text="{Binding ., Converter={StaticResource ConvertisseurChiffre}, ConverterParameter={x:Reference Partie}}"
+                                FontSize="25" FontAttributes="Bold" Padding="0" TextColor="White">
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </FlexLayout>
+
+        <Frame
+                x:Name="imageVictoire"
+            IsVisible="False"
+                Grid.ColumnSpan="3"
+                Grid.Row="2"
+                BackgroundColor="#7F000000"
+                CornerRadius="25">
+            <Image
+                Source="victory.svg"
+                />
+        </Frame>
+        
+        
+    </Grid>
+</ContentPage>
