@@ -1,4 +1,5 @@
 ﻿using Modele;
+using Outils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace TestSudokolor.Modele
         [Fact]
         public void TestHistorique()
         {
-            Partie partie = new Partie(ObtenirGrille(), new(), "test");
+            Partie partie = new Partie(ObtenirGrille(), new(), "test", DIFFICULTE.FACILE,false,new());
             partie.AjouterAction(new int[]{ 0, 1 });
             Assert.Equal(1, partie.ObtenirTailleHistorique());
             Assert.Equal(new int[] { 0, 1 }, partie.ObtenirAction(0));

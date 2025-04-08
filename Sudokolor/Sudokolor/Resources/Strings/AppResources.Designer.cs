@@ -61,11 +61,83 @@ namespace Sudokolor.Resources.Strings {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Back.
+        /// </summary>
+        public static string app_page_historique_retour {
+            get {
+                return ResourceManager.GetString("app_page_historique_retour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Grid.
+        /// </summary>
+        public static string app_page_historique_texte_bouton {
+            get {
+                return ResourceManager.GetString("app_page_historique_texte_bouton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Date.
+        /// </summary>
+        public static string app_page_historique_texte_date {
+            get {
+                return ResourceManager.GetString("app_page_historique_texte_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Difficulty.
+        /// </summary>
+        public static string app_page_historique_texte_difficulte {
+            get {
+                return ResourceManager.GetString("app_page_historique_texte_difficulte", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mode.
+        /// </summary>
+        public static string app_page_historique_texte_mode {
+            get {
+                return ResourceManager.GetString("app_page_historique_texte_mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à History.
+        /// </summary>
+        public static string app_page_historique_titre {
+            get {
+                return ResourceManager.GetString("app_page_historique_titre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Your history is empty.
+        /// </summary>
+        public static string app_page_historique_vide {
+            get {
+                return ResourceManager.GetString("app_page_historique_vide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Game&apos;s code copied !.
         /// </summary>
         public static string app_page_jeu_confirmation {
             get {
                 return ResourceManager.GetString("app_page_jeu_confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Score.
+        /// </summary>
+        public static string app_page_jeu_score {
+            get {
+                return ResourceManager.GetString("app_page_jeu_score", resourceCulture);
             }
         }
         
@@ -309,6 +381,15 @@ namespace Sudokolor.Resources.Strings {
         public static string app_popup_grille_fausse {
             get {
                 return ResourceManager.GetString("app_popup_grille_fausse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Hint mode has been enabled. Tap on a case to reveal its value..
+        /// </summary>
+        public static string app_popup_mode_indice {
+            get {
+                return ResourceManager.GetString("app_popup_mode_indice", resourceCulture);
             }
         }
         

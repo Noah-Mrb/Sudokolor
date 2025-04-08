@@ -10,6 +10,7 @@ namespace Sudokolor
             Routing.RegisterRoute("Menu", typeof(PageMenu));
             Routing.RegisterRoute("Partie", typeof(PagePartie));
             Routing.RegisterRoute("Options",typeof(PageOptions));
+            Routing.RegisterRoute("Historique", typeof(PageHistorique));
         }
     }
 }

@@ -43,6 +43,7 @@
 	  <Optimize>False</Optimize>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <ApplicationId>com.coloku.sudokolor</ApplicationId>
+	  <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
@@ -63,6 +64,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
 	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
 	  <ApplicationId>com.coloku.sudokolor</ApplicationId>
+	  <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
@@ -152,6 +154,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Pages\PageHistorique.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\PageOptions.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

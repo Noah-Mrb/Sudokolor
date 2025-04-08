@@ -10,7 +10,14 @@ namespace Modele
     /// <author>Valentin Colindre</author>
     public class Grille
     {
-        private const int TAILLEGRILLE = 9;
+        /// <summary>
+        /// Taille de la grille de sudoku
+        /// </summary>
+        public static int TAILLE_GRILLE => 9;
+        /// <summary>
+        /// Taille de la sous grille de sudoku
+        /// </summary>
+        public static int TAILLE_SOUS_GRILLE => 3;
 
         [JsonProperty]
         private Case[,] contenu;
@@ -65,12 +72,11 @@ namespace Modele
         /// <exception cref="CaseNonModifiableException">La modification de la case est désactivée</exception>
         public void ModifierCase(int hauteur, int largeur,int valeur)
         {
-            if (hauteur < 0 ||hauteur >= contenu.GetLength(0) || largeur < 0 || largeur >= contenu.GetLength(1) || valeur<0 || valeur>TAILLEGRILLE)
+            if (hauteur < 0 ||hauteur >= contenu.GetLength(0) || largeur < 0 || largeur >= contenu.GetLength(1) || valeur<0 || valeur>TAILLE_GRILLE)
                 throw new HorsLimiteException("la hauteur ou la largeur est incorrect.");
             if (!contenu[hauteur, largeur].EstModifiable)
                 throw new CaseNonModifiableException("La case n'est pas modifiable.");
             contenu[hauteur, largeur].Valeur=valeur;
         }
-
     }
 }

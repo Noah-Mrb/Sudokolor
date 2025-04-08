@@ -210,4 +210,31 @@
   <data name="app_page_options_theme_chiffres" xml:space="preserve">
     <value>Numbers</value>
   </data>
+  <data name="app_page_historique_retour" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="app_page_historique_titre" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="app_page_jeu_score" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="app_page_historique_vide" xml:space="preserve">
+    <value>Your history is empty</value>
+  </data>
+  <data name="app_popup_mode_indice" xml:space="preserve">
+    <value>The Hint mode has been enabled. Tap on a case to reveal its value.</value>
+  </data>
+  <data name="app_page_historique_texte_bouton" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="app_page_historique_texte_date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="app_page_historique_texte_mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="app_page_historique_texte_difficulte" xml:space="preserve">
+    <value>Difficulty</value>
+  </data>
 </root>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Modele;
+﻿using Modele;
 
 namespace Outils
 {
@@ -18,7 +13,7 @@ namespace Outils
         /// </summary>
         /// <param name="graine">Valeur permetant de générer une grille spécifique si elle est renseigné</param>
         /// <returns>Une grille initialisé</returns>
-        public Grille GenererGrille(string graine = "");
+        public Grille GenererGrille(string graine = "", int quantiteCaseVide=40);
 
         /// <summary>
         /// Vérifie si une grille est complétée
@@ -29,11 +24,20 @@ namespace Outils
         public bool VerifierGrille(Partie partie);
 
         /// <summary>
-        /// Renvoi la solution de la grille en paramètre
+        /// Récupère toutes les erreurs dans une grilles
         /// </summary>
-        /// <param name="grille">grille à résoudre</param>
-        /// <returns>la grille résolue</returns>
-        /// <author>Valentin Colindre</author>
-        public Grille ObtenirSolution(Partie partie);
+        /// <param name="partie">grille de la partie en cours</param>
+        /// <returns>liste des erreurs</returns>
+        /// <author>Noah Mirbel</author>
+        public List<(int, int)> RecupererErreurs(Partie partie);
+
+        /// <summary>
+        /// Récupère la solution d'une case
+        /// </summary>
+        /// <param name="ligne">ligne de la case à vérifier</param>
+        /// <param name="colonne">colonne de la case à vérifier</param>
+        /// <param name="graine">graine de la grille à vérifier si besoin</param>
+        /// <returns>valeur de la case</returns>
+        public int ObtenirSolutionCase(int ligne, int colonne, string graine = "");
     }
 }

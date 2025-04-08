@@ -13,20 +13,21 @@ namespace Outils.Generateurs
     {
         private const int TAILLE_GRILLE = 9;
         private const int TAILLE_SOUS_GRILLE = 3;
-        // Ajuster ce nombre pour changer la difficulté
-        private const int QUANTITE_CASE_VIDE = 40;
         private Random? aleatoire;
-        private int[,]? solution;
+        private Grille? grilleResolue;
 
         /// <inheritdoc />
-        public Grille GenererGrille(string graine = "")
+        public Grille GenererGrille(string graine = "", int quantiteCaseVide = 40)
         {
             aleatoire = GenererUnRandom(graine);
             int[,] grille = new int[TAILLE_GRILLE, TAILLE_GRILLE];
             RemplirSousGrillesDiagonales(grille);
             RemplirReste(grille, 0, TAILLE_SOUS_GRILLE);
-            solution = (int[,])grille.Clone();
-            RetirerNombres(grille, QUANTITE_CASE_VIDE);
+
+            // on conserve la grille complétée pour les solutions
+            grilleResolue = ConvertirEnGrille(grille, false, graine);
+
+            RetirerNombres(grille, quantiteCaseVide);
             return ConvertirEnGrille(grille, false, graine);
         }
 
@@ -50,9 +51,22 @@ namespace Outils.Generateurs
             return new Random(graineInt);
         }
 
-
         /// <inheritdoc />
-        public Grille ObtenirSolution(Partie partie) => ConvertirEnGrille(solution, true);
+        public int ObtenirSolutionCase(int ligne, int colonne, string graine = "")
+        {
+            int valeur = 0;
+
+            if (grilleResolue != null)
+            {
+                valeur = grilleResolue[ligne, colonne].Valeur;
+            }
+            else
+            {
+                valeur = GenererGrille(graine, 0)[ligne, colonne].Valeur;
+            }
+
+            return valeur;
+        }
 
         /// <inheritdoc />
         public bool VerifierGrille(Partie partie)
@@ -73,6 +87,29 @@ namespace Outils.Generateurs
             }
 
             return resultat;
+        }
+
+        /// <inheritdoc />
+        public List<(int, int)> RecupererErreurs(Partie partie)
+        {
+            List<(int, int)> erreurs = new List<(int, int)> ();
+
+            for (int i = 0; i < TAILLE_GRILLE; i++)
+            {
+                for (int j = 0; j < TAILLE_GRILLE; j++)
+                {
+                    if (
+                            partie.RecupererCaseGrille(i, j).Valeur != 0
+                            && !EstValide(ConvertirPartieEnTableau(partie), i, j, partie.RecupererCaseGrille(i, j).Valeur)
+                            && partie.RecupererCaseGrille(i, j).EstModifiable
+                        )
+                    {
+                        erreurs.Add((i, j));
+                    }
+                }
+            }
+
+            return erreurs;
         }
 
         /// <summary>
@@ -189,17 +226,19 @@ namespace Outils.Generateurs
         /// <param name="colonne">Indice de la colonne de la case.</param>
         /// <param name="num">Valeur à tester.</param>
         /// <returns>Vrai si la valeur n'existe pas dans la ligne sauf dans la case spécifiée, faux sinon.</returns>
-        /// <author>Nordine Hida</author>
+        /// <author>Nordine Hida, Noah Mirbel</author>
         private bool EstValideDansLigne(int[,] grille, int ligne, int colonne, int num)
         {
             bool estValide = true;
+            int x = 0;
 
-            for (int x = 0; x < grille.GetLength(1); x++)
+            while (x < grille.GetLength(1) && estValide)
             {
                 if (x != colonne && grille[ligne, x] == num)
                 {
                     estValide = false;
                 }
+                x++;
             }
 
             return estValide;
@@ -213,17 +252,19 @@ namespace Outils.Generateurs
         /// <param name="colonne">Indice de la colonne.</param>
         /// <param name="num">Valeur à tester.</param>
         /// <returns>Vrai si la valeur n'existe pas dans la colonne sauf dans la case spécifiée, faux sinon.</returns>
-        /// <author>Nordine Hida</author>
+        /// <author>Nordine Hida, Noah Mirbel</author>
         private bool EstValideDansColonne(int[,] grille, int ligne, int colonne, int num)
         {
             bool estValide = true;
+            int y = 0;
 
-            for (int y = 0; y < grille.GetLength(0); y++)
+            while (y < grille.GetLength(0) && estValide)
             {
                 if (y != ligne && grille[y, colonne] == num)
                 {
                     estValide = false;
                 }
+                y++;
             }
 
             return estValide;
@@ -237,16 +278,19 @@ namespace Outils.Generateurs
         /// <param name="colonne">Indice de la colonne de la case.</param>
         /// <param name="num">Valeur à tester.</param>
         /// <returns>Vrai si la valeur n'existe pas dans la sous-grille sauf dans la case spécifiée, faux sinon.</returns>
-        /// <author>Nordine Hida</author>
+        /// <author>Nordine Hida, Noah Mirbel</author>
         private bool EstValideDansSousGrille(int[,] grille, int ligne, int colonne, int num)
         {
             bool estValide = true;
             int debutLigne = ligne - ligne % TAILLE_SOUS_GRILLE;
             int debutColonne = colonne - colonne % TAILLE_SOUS_GRILLE;
+            int i = 0;
+            
 
-            for (int i = 0; i < TAILLE_SOUS_GRILLE; i++)
+            while (i < TAILLE_SOUS_GRILLE && estValide)
             {
-                for (int j = 0; j < TAILLE_SOUS_GRILLE; j++)
+                int j = 0;
+                while (j < TAILLE_SOUS_GRILLE && estValide)
                 {
                     int currentLigne = debutLigne + i;
                     int currentColonne = debutColonne + j;
@@ -255,7 +299,9 @@ namespace Outils.Generateurs
                     {
                         estValide = false;
                     }
+                    j++;
                 }
+                i++;
             }
 
             return estValide;
@@ -280,10 +326,7 @@ namespace Outils.Generateurs
                     //Clonage de la grille nécessaire pour éviter de modifier
                     //celle utilisé par la fonction actuellement
                     int[,] grilleTemporaire = (int[,])grille.Clone();
-                    if (CompterSolutions(grilleTemporaire) == 1)
-                        nombresARetirer--;
-                    else
-                        grille[ligne, colonne] = temp;
+                    nombresARetirer--;
                 }
             }
         }

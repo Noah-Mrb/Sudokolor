@@ -13,9 +13,19 @@
         Title="{x:Static resx:AppResources.app_page_principale_titre}"
         ContentTemplate="{DataTemplate local:PageMenu}"
         Route="PageMenu" />
-    
+
     <ShellContent
         Title="{x:Static resx:AppResources.app_page_jeu_titre}"
         ContentTemplate="{DataTemplate local:PagePartie}"
         Route="PagePartie" />
+    
+    <ShellContent
+        Title="{x:Static resx:AppResources.app_page_options_titre}"
+        ContentTemplate="{DataTemplate local:PageOptions}"
+        Route="PageOptions" />
+
+    <ShellContent
+        Title="{x:Static resx:AppResources.app_page_historique_titre}"
+        ContentTemplate="{DataTemplate local:PageHistorique}"
+        Route="PageHistorique" />
 </Shell>

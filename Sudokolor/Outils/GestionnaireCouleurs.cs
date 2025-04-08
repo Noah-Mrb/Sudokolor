@@ -1,11 +1,5 @@
 ﻿using Modele;
 using Outils.Themes;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Outils
 {
@@ -62,6 +56,33 @@ namespace Outils
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Renvoi la couleur de bordure d'erreur
+        /// selon le theme
+        /// </summary>
+        /// <param name="theme">theme</param>
+        /// <returns>couleur de bordure correspondante</returns>
+        public static string ObtenirCouleurBordureErreur(THEME_COULEUR theme)
+        {
+            const string COULEUR_DEFAUT = "d50610";
+            const string COULEUR_DALTONIEN = "FF61FA";
+            string couleurHexa = COULEUR_DEFAUT;
+            switch (theme)
+            {
+                case THEME_COULEUR.DEFAUT:
+                    couleurHexa = COULEUR_DEFAUT;
+                    break;
+                case THEME_COULEUR.DALTONIEN:
+                    couleurHexa = COULEUR_DALTONIEN;
+                    break;
+                default:
+                    couleurHexa = COULEUR_DEFAUT;
+                    break;
+            }
+
+            return couleurHexa;
         }
     }
 }

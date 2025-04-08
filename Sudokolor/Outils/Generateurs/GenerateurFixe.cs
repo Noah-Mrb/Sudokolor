@@ -1,9 +1,5 @@
 ﻿using Modele;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Outils.Generateurs
 {
@@ -49,7 +45,13 @@ namespace Outils.Generateurs
         }
 
         /// <inheritdoc />
-        public Grille GenererGrille(string graine = "")
+        public int ObtenirSolutionCase(int ligne, int colonne, string graine = "")
+        {
+            return solution[ligne, colonne];
+        }
+
+        /// <inheritdoc />
+        public Grille GenererGrille(string graine = "", int quantiteCaseVide = 40)
         {
             Case[,] contenu = new Case[TAILLE_GRILLE, TAILLE_GRILLE];
 
@@ -63,17 +65,19 @@ namespace Outils.Generateurs
         }
 
         /// <inheritdoc />
-        public Grille ObtenirSolution(Partie partie)
+        public List<(int, int)> RecupererErreurs(Partie partie)
         {
             Case[,] contenu = new Case[TAILLE_GRILLE, TAILLE_GRILLE];
+            List<(int, int)> erreurs = new List<(int, int)>();
 
             for (int i = 0; i < TAILLE_GRILLE; i++)
                 for (int j = 0; j < TAILLE_GRILLE; j++)
-                    contenu[i, j] = new Case(solution[i, j], true);
+                    if(contenu[i, j] != new Case(solution[i, j], true))
+                    {
+                        erreurs.Add((i, j));
+                    }
 
-            Grille grilleSolution = new Grille(contenu);
-
-            return grilleSolution;
+            return erreurs;
         }
 
         /// <inheritdoc />

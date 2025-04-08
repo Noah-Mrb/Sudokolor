@@ -66,9 +66,7 @@
                         MaxLength="20" FontAutoScalingEnabled="False" ClearButtonVisibility="WhileEditing" IsSpellCheckEnabled="False"/>
                 </Frame>
 
-
-
-                <Grid>
+                <Grid x:Name="GrilleDifficulte">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -77,24 +75,45 @@
                     <Button
                         x:Name="BtnDebutant"
                         ImageSource="debutant.svg"
-                        Grid.Column="0" />
+                        Grid.Column="0"
+                        Pressed="ChangerDifficulte"
+                        Text="0"
+                        TextColor="Transparent"
+                        FontSize="1"
+                        MaximumWidthRequest="100"
+                        Padding="10,10,0,10"/>
                     <Button
                         x:Name="BtnIntermediaire"
                         Style="{StaticResource Inactif}"
                         ImageSource="intermediaire.svg"
-                        Grid.Column="1" />
+                        Grid.Column="1" 
+                        Pressed="ChangerDifficulte"
+                        Text="1"
+                        TextColor="Transparent"
+                        FontSize="1"
+                        MaximumWidthRequest="100"
+                        Padding="10,10,0,10"/>
                     <Button
                         x:Name="BtnAvance"
                         Style="{StaticResource Inactif}"
                         ImageSource="avance.svg"
-                        Grid.Column="2" />
+                        Grid.Column="2"
+                        Pressed="ChangerDifficulte"
+                        Text="2"
+                        TextColor="Transparent"
+                        FontSize="1"
+                        MaximumWidthRequest="100"
+                        Padding="10,10,0,10"/>
                 </Grid>
 
                 <Button                    
-                    Text="{x:Static resx:AppResources.app_page_principale_btn_contre_la_montre}"/>
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_contre_la_montre}"
+                    Clicked="ContreLaMontre"/>
 
                 <Button
-                    Text="{x:Static resx:AppResources.app_page_principale_btn_historique}" />
+                    x:Name="BoutonHistorique"
+                    Text="{x:Static resx:AppResources.app_page_principale_btn_historique}"
+                    Clicked="OuvrirHistorique"/>    
 
                 <Button
                     x:Name="BoutonOptions"

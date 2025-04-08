@@ -10,9 +10,12 @@ Bienvenue dans **Sudokolor**, une application de Sudoku où les chiffres sont re
 - **Retour en arrière** : Annulez votre dernier mouvement en un clic grâce à un bouton dédié.  
 - **Validation des grilles** : L'application vérifie automatiquement si la solution est correcte.  
 - **Sauvegarde et reprise de partie** : Reprenez une partie interrompue après fermeture de l’application.  
-- **Personnalisation** : Jouez avec des chiffres, des formes ou un spectre réduit de couleurs.  
+- **Personnalisation** : Jouez avec des chiffres ou un spectre réduit de couleurs.  
 - **Partage de parties** : Générez et partagez un code unique représentant une grille.  
-- **Multilingue** : Par défaut, l’application adopte la langue du système (FR/EN).  
+- **Multilingue** : Par défaut, l’application adopte la langue du système (FR/EN).
+- **Historique** : Consultez les statistiques sur vos dix meilleures parties.
+- **Aides** : Mettez en valeur les erreurs, et demandez des indices pour vous débloquer.
+- **Contre-la-montre** : Affrontez le sablier sur vos grilles préférées pour faire le meilleur temps.
 
 ---
 
@@ -26,7 +29,7 @@ Bienvenue dans **Sudokolor**, une application de Sudoku où les chiffres sont re
 1. **US 1.1.0 - Lancer une partie** : Démarrez une nouvelle partie depuis le menu principal.  
 2. **US 1.2.0 - Changer les valeurs des cases** : Modifiez les couleurs des cases via un panel de sélection.  
 
-#### Tâches spécifiques  
+#### Tâches techniques  
 - **TS 1.1.0 - Génération de grille** : Une grille aléatoire réalisable est générée avec 40 cases à compléter sur 81.  
 
 ---
@@ -46,9 +49,26 @@ Bienvenue dans **Sudokolor**, une application de Sudoku où les chiffres sont re
 #### User Story Bonus  
 - **US 1.9.0 - Sauvegarde d’état** : L’état de la partie est conservé après fermeture de l’application.  
 
-#### Tâches spécifiques  
+#### Tâches techniques  
 - **TS 1.4.0 - Nettoyage et optimisation** : Réduction de la complexité cyclomatique et augmentation de la couverture des tests.  
-- **TS 1.5.0 - Adaptation d’affichage** : L’application s’adapte à divers formats d’écran.  
+- **TS 1.5.0 - Adaptation d’affichage** : L’application s’adapte à divers formats d’écran.
+
+---
+
+### 🔴 Sprint 3 : Version Release
+> **13/12/2024**.
+**Objectif** : Implémenter les notions de niveaux et de score dans l'ensemble du jeu pour permettre une bonne expérience au plus grand nombre de joueurs.
+
+#### User Stories réalisées
+1. **US 1.4.1 - Nombre de cases restantes pour chaque couleurs** : Ajoute une bulle au-dessus de chaque couleur indiquant la quantité restante.
+2. **US 1.8.0 - Historique des meilleures parties** : Accédez à l'historique de vos dix meilleures parties.
+3. **US 2.0.0 - Choix de la difficulté** : Choisissez entre les niveaux facile, intermédiaire ou difficile.
+4. **US 1.7.0 - Gestion du score** : Obtenez votre score qui prend en compte tous les paramètres de jeu.
+5. **US 1.4.2 - Mode indice** : Activez-le pour vous sortir d'une passe difficile au prix de votre meilleur score. 
+6. **US 2.2.0 - Contre-la-montre** : Jouez au mode contre-la-montre et terminez la grille avant la fin du chronomètre. 
+
+#### Tâches techniques
+- **TS 1.3.0 - Calcul des points** : Implémente le fonctionnement du calcul des points selon le temps, les aides demandées ou encore la difficulté de la partie.
 
 ---
 

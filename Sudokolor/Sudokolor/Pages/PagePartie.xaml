@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:VueModele;assembly=VueModele"
-             xmlns:convertisseurs="clr-namespace:Sudokolor.Convertisseurs"
-             xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
-             xmlns:pages="clr-namespace:Sudokolor.Pages"
-             x:Class="Sudokolor.Pages.PagePartie"
-             x:Name="Partie"
-             x:DataType="vm:PartieVueModele"
-             BackgroundImageSource="background_bois.jpeg">
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:vm="clr-namespace:VueModele;assembly=VueModele"
+        xmlns:convertisseurs="clr-namespace:Sudokolor.Convertisseurs"
+        xmlns:resx="clr-namespace:Sudokolor.Resources.Strings" xmlns:pages="clr-namespace:Sudokolor.Pages"
+        xmlns:local="clr-namespace:Modele;assembly=Modele" x:Class="Sudokolor.Pages.PagePartie" x:Name="Partie"
+        x:DataType="vm:PartieVueModele" BackgroundImageSource="background_bois.jpeg">
 
     <ContentPage.Resources>
-        <convertisseurs:ConvertisseurCouleur x:Key="ConvertisseurCouleur"/>
-        <convertisseurs:ConvertisseurChiffre x:Key="ConvertisseurChiffre"/>
+        <convertisseurs:ConvertisseurCouleur x:Key="ConvertisseurCouleur" />
+        <convertisseurs:ConvertisseurCouleurTexte x:Key="ConvertisseurCouleurTexte" />
+        <convertisseurs:ConvertisseurCompteurVisible x:Key="ConvertisseurCompteurVisible" />
+        <convertisseurs:ConvertisseurBordureCouleur x:Key="ConvertisseurBordureCouleur" />
+        <convertisseurs:ConvertisseurBordureTaille x:Key="ConvertisseurBordureTaille" />
+
+        <ResourceDictionary>
+            <Style TargetType="Button" x:Key="ModeIndice">
+                <Style.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding ModeIndice}" Value="True">
+                        <Setter Property="BackgroundColor"
+                                Value="{AppThemeBinding Light={StaticResource PrimaryDisabled}, Dark={StaticResource PrimaryDisabled}}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </ContentPage.Resources>
 
     <Grid Margin="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
@@ -68,12 +78,29 @@
             </Grid>
 
             <!--Bouton paramètre à droite -->
-            <Button x:Name="BoutonOptions"  Margin="0,20,0,20" ImageSource="roue_parametre.svg" Grid.Column="2" Clicked="Options" />
+            <Button x:Name="BoutonOptions" Margin="0,20,0,20" ImageSource="roue_parametre.svg" Grid.Column="2"
+                    Clicked="Options" />
 
         </Grid>
 
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label x:Name="LabelChrono" Text="" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center"
+                    FontAutoScalingEnabled="True" FontSize="20" />
+            <Label x:Name="LabelScore" Text="" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                    FontAutoScalingEnabled="True" FontSize="20" />
+        </Grid>
+
         <!-- Grille de jeu -->
-        <Grid x:Name="GrilleJeu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Margin="10" VerticalOptions="Center" HorizontalOptions="Center">
+        <Grid x:Name="GrilleJeu" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Margin="10" VerticalOptions="Center"
+                HorizontalOptions="Center">
             <!-- Définition des colonnes (11 colonnes pour inclure les séparateurs) -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -110,64 +137,69 @@
             </Grid.RowDefinitions>
         </Grid>
 
-
-
-
         <!-- Bouton retour arrière et switch button indice -->
-        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Margin="0,20,0,20" >
+        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Margin="0,20,0,20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2.5*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2.5*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0"
-                ImageSource="retour_arriere.svg"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=RetourCommand}"
-            />
+            <Button x:Name="BoutonRetourAction" Grid.Column="0" ImageSource="retour_arriere.svg"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=RetourCommand}" />
 
-            <Button Grid.Column="1"
-                FontSize="18"
-                Text="{x:Static resx:AppResources.app_popup_soumission_grille_btn_soumettre}"
-                Clicked="AffichagePopupValidationGrille"
-                IsVisible="{Binding ToutesLesCasesSontRemplies}"/>
+            <Button Grid.Column="1" FontSize="18"
+                    Text="{x:Static resx:AppResources.app_popup_soumission_grille_btn_soumettre}"
+                    Clicked="AffichagePopupValidationGrille" IsVisible="{Binding ToutesLesCasesSontRemplies}"
+                    x:Name="BoutonValidationGrille" />
 
-            <Button Grid.Column="2"
-                ImageSource="ampoule.svg"/>
-
+            <Button Grid.Column="2" ImageSource="ampoule.svg"
+                    Command="{Binding  Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=IndiceModeCommand}"
+                    Style="{StaticResource ModeIndice}" Clicked="IndiceClique" x:Name="boutonIndice"/>
         </Grid>
 
         <!-- Grille qui liste les différentes couleurs utilisables automatiquement pour jouer -->
         <FlexLayout Grid.ColumnSpan="3" Grid.Row="4" BindableLayout.ItemsSource="{Binding Couleurs}" Wrap="Wrap"
-                JustifyContent="SpaceEvenly" AlignItems="Center">
+                JustifyContent="SpaceEvenly" AlignItems="Center" x:Name="PaletteCouleurs">
             <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="2">
+                <DataTemplate x:DataType="local:CouleurPalette">
+                    <Grid Margin="1">
                         <!-- Le bouton circulaire -->
-                        <Button MinimumHeightRequest="50" MinimumWidthRequest="50" CornerRadius="50"
-                                BackgroundColor="{Binding ., Converter={StaticResource ConvertisseurCouleur}, ConverterParameter={x:Reference Partie}}"
+                        <Button x:Name="PaletteBouton" MinimumHeightRequest="50" MinimumWidthRequest="50"
+                                CornerRadius="50"
+                                BackgroundColor="{Binding Valeur, Converter={StaticResource ConvertisseurCouleur}, ConverterParameter={x:Reference Partie}}"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=ChangerCouleurActiveCommand}"
-                                CommandParameter="{Binding .}" Clicked="CouleurCliquee"
-                                Text="{Binding ., Converter={StaticResource ConvertisseurChiffre}, ConverterParameter={x:Reference Partie}}"
-                                FontSize="25" FontAttributes="Bold" Padding="0" TextColor="White">
+                                CommandParameter="{Binding Valeur}" Text="{Binding Valeur}" FontSize="25"
+                                FontAttributes="Bold" Padding="0"
+                                TextColor="{Binding Valeur, Converter={StaticResource ConvertisseurCouleurTexte}, ConverterParameter={x:Reference Partie}}"
+                                BorderColor="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}},
+                                Path=CouleurActive, Converter={StaticResource ConvertisseurBordureCouleur}, ConverterParameter={x:Reference PaletteBouton}}"
+                                BorderWidth="{Binding Source={RelativeSource AncestorType={x:Type vm:PartieVueModele}}, Path=CouleurActive,
+                                Converter={StaticResource ConvertisseurBordureTaille}, ConverterParameter={x:Reference PaletteBouton}}">
                         </Button>
+
+                        <!-- Nombre de cases restantes pour cette valeur/couleur -->
+                        <Frame BackgroundColor="{StaticResource Primary}" CornerRadius="15" HeightRequest="30"
+                                WidthRequest="30" VerticalOptions="Start" HorizontalOptions="End" Padding="0"
+                                IsClippedToBounds="True" TranslationX="6" TranslationY="-5"
+                                IsVisible="{Binding Valeur, Converter={StaticResource ConvertisseurCompteurVisible}, ConverterParameter={x:Reference Partie}}">
+                            <Label Text="{Binding NombreRestant}" HorizontalOptions="Center" VerticalOptions="Center"
+                                    TextColor="White" FontAttributes="Bold" />
+                        </Frame>
                     </Grid>
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </FlexLayout>
 
-        <Frame
-                x:Name="imageVictoire"
-            IsVisible="False"
-                Grid.ColumnSpan="3"
-                Grid.Row="2"
-                BackgroundColor="#7F000000"
+        <Frame x:Name="imageVictoire" IsVisible="False" Grid.ColumnSpan="3" Grid.Row="2" BackgroundColor="#7F000000"
                 CornerRadius="25">
-            <Image
-                Source="victory.svg"
-                />
+            <Image Source="victory.svg" />
         </Frame>
-        
-        
+
+        <Frame x:Name="imageDefaite" IsVisible="False" Grid.ColumnSpan="3" Grid.Row="2" BackgroundColor="#7F000000"
+                CornerRadius="25">
+            <Image Source="defeat.svg" />
+        </Frame>
+
     </Grid>
 </ContentPage>

@@ -210,4 +210,31 @@
   <data name="app_page_options_theme_chiffres" xml:space="preserve">
     <value>Chiffres</value>
   </data>
+  <data name="app_page_historique_retour" xml:space="preserve">
+    <value>Retour</value>
+  </data>
+  <data name="app_page_historique_titre" xml:space="preserve">
+    <value>Historique</value>
+  </data>
+  <data name="app_page_jeu_score" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="app_page_historique_vide" xml:space="preserve">
+    <value>Votre historique est vide</value>
+  </data>
+  <data name="app_popup_mode_indice" xml:space="preserve">
+    <value>Le mode Indice a été activé. Appuyez sur une case pour révéler sa valeur.</value>
+  </data>
+  <data name="app_page_historique_texte_bouton" xml:space="preserve">
+    <value>Grille</value>
+  </data>
+  <data name="app_page_historique_texte_date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="app_page_historique_texte_mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="app_page_historique_texte_difficulte" xml:space="preserve">
+    <value>Difficulté</value>
+  </data>
 </root>

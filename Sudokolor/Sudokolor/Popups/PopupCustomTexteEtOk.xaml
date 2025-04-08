@@ -18,8 +18,9 @@
             <!-- Texte centré dans la première moitié du haut -->
             <Label
                 x:Name="LabelTexteAfficher"
-                FontSize="23"
+                FontSize="18"
                 Grid.Row="0"
+                Margin="0,0,0,15"
                 HorizontalTextAlignment="Start"
                 VerticalTextAlignment="Center"/>
 

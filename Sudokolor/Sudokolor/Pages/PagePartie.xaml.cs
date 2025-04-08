@@ -11,40 +11,26 @@ namespace Sudokolor.Pages;
 /// Page de la partie o� il est possible de jouer au Sudoku
 /// </summary>
 /// <author>Nordine HIDA</author>
-[QueryProperty(nameof(Graine), "graine")]
-public partial class PagePartie : ContentPage
+public partial class PagePartie : ContentPage, IQueryAttributable
 {
     private PartieVueModele? vm;
-    private Button? couleurPaletteActive;
+    //Timer du score de la partie
+    private IDispatcherTimer score;
+    //Indique si une popup est affichée à l'écran (pour éviter d'en superposer plusieurs)
+    private bool popupActive;
 
-    /// <summary>
-    /// Graine passée par query
-    /// lors du changement de page
-    /// Utilisée pour initialiser le vuemodele
-    /// </summary>
-    public string Graine
-    {
-        set
-        {
-            if (this.vm != null)
-            {
-                this.vm.InitialiserPartie(value);
-            }
-        }
-    }
 
     /// <summary>
     /// Renvoi le thème de la partie
     /// </summary>
     public THEME_COULEUR Theme => this.vm.ThemeCouleur;
 
+    /// <summary>
+    /// Difficulté de la partie
+    /// </summary>
+    public DIFFICULTE Difficulte => this.vm.Difficulte;
 
-    // Couleur actuellement s�lectionn�e par le joueur
-    private Button? CouleurPaletteActive
-    {
-        get => couleurPaletteActive;
-        set => couleurPaletteActive = value;
-    }
+
 
     /// <summary>
     /// Constructeur de la page de partie
@@ -55,9 +41,33 @@ public partial class PagePartie : ContentPage
     {
         //initialisation du VueModele
         this.vm = vm;
-
+        popupActive = false;
         InitializeComponent();
-        this.BindingContext = vm;
+        this.BindingContext = vm;        
+    }
+
+    /// <inheritdoc/>
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.ContainsKey("graine") && query.ContainsKey("contreLaMontre"))
+        {
+            //On récupère les paramètres de la partie
+            string graine = Convert.ToString(query["graine"]);
+            bool contreLaMontre = Convert.ToBoolean(query["contreLaMontre"]);
+            InitialiserPartie(graine, contreLaMontre);
+        }
+    }
+
+    //Initialise la partie avec les timers d'affichage d'information
+    private void InitialiserPartie(string graine, bool contreLaMontre)
+    {
+        this.vm.InitialiserPartie(graine, (DIFFICULTE)Preferences.Get("difficulte", 0), contreLaMontre);
+
+        //on masque le bouton en mode difficile
+        if (Difficulte == DIFFICULTE.DIFFICILE)
+            boutonIndice.IsVisible = false;
+
+        InitialiserScore();
     }
 
 
@@ -69,6 +79,8 @@ public partial class PagePartie : ContentPage
         ConstruireGrille();
     }
 
+
+
     /// <summary>
     /// Renvoie une couleur � partir de la valeur d'une case
     /// </summary>
@@ -78,6 +90,37 @@ public partial class PagePartie : ContentPage
     public Color ObtenirCouleur(int valeur)
     {
         return Color.FromRgba("#" + vm.ObtenirCouleur(valeur));
+    }
+
+    //Initialise le timer du score
+    private void InitialiserScore()
+    {
+        score = Dispatcher.CreateTimer();
+        score.Interval = TimeSpan.FromMilliseconds(1000);
+        score.Tick += MettreAJourScore;
+        score.Tick += MettreAJourChronoNormal;
+        score.Start();
+    }
+
+    //Met à jour l'affichage du score
+    private void MettreAJourScore(object? sender, EventArgs? e)
+    {
+        LabelScore.Text = $"{AppResources.app_page_jeu_score} : {this.vm.ObtenirScore().ToString()}";
+    }
+
+    //Met à jour l'affichage normal du chrono
+    private void MettreAJourChronoNormal(object? sender, EventArgs? e)
+    {
+        TimeSpan tempsEcoule = this.vm.ObtenirTemps();
+        string texteSousFormat = $"{tempsEcoule.Hours:D2}:{tempsEcoule.Minutes:D2}:{tempsEcoule.Seconds:D2}";
+        LabelChrono.Text = texteSousFormat;
+        if (this.vm.ContreLaMontre && tempsEcoule.TotalSeconds <= 0)
+        {
+            imageDefaite.IsVisible = true;
+            BoutonRetourAction.IsEnabled = false;
+            this.score.Stop();
+            this.vm.TerminerPartie();
+        }
     }
 
 
@@ -110,23 +153,29 @@ public partial class PagePartie : ContentPage
                 bouton.SetBinding(Button.BackgroundColorProperty, new Binding($"Contenu[{caseIndex}].Valeur",
                 converter: new ConvertisseurCouleur(),
                 converterParameter: this));
-
+                
                 if (this.vm.ThemeCouleur == THEME_COULEUR.CHIFFRES)
                 {
-                    //Couleur blanche pour le texte
-                    bouton.TextColor = Color.FromArgb("#ffffff");
-                    bouton.SetBinding(Button.TextProperty, new Binding($"Contenu[{caseIndex}].Valeur",
-                    converter: new ConvertisseurChiffre(),
-                    converterParameter: this));
+                    bouton.SetBinding(Button.TextColorProperty, new Binding($"Contenu[{caseIndex}].Valeur",
+                        converter: new ConvertisseurCouleurTexte(),
+                        converterParameter: this));
+                    bouton.SetBinding(Button.TextProperty, new Binding($"Contenu[{caseIndex}].Valeur"));
                 }
 
                 // Change le visuel des cases donn�es au d�but non modifiables
-                bouton.IsEnabled = vm.Contenu[caseIndex].EstModifiable;
+                bouton.SetBinding(Button.IsEnabledProperty, new Binding($"Contenu[{caseIndex}].EstModifiable", source: vm));
 
-                // Liaison avec le changement de couleur
+                // Liaison avec le changement de couleur et la verification des cases fausses
                 bouton.SetBinding(Button.CommandProperty, new Binding("ChangerCouleurCommand", source: vm));
                 var commandParameter = row * 9 + col;
                 bouton.CommandParameter = commandParameter;
+
+                //si la case est modifiable lie la bordure à la propriété CasesAvecErreur
+                if (bouton.IsEnabled)
+                {
+                    bouton.SetBinding(Button.BorderColorProperty, new Binding($"Contenu[{caseIndex}].EstValide", converter: new ConvertisseurBordureRouge()));
+                    bouton.BorderWidth = 2;
+                }
 
                 DefinirPosition(bouton, row, col);
 
@@ -199,29 +248,10 @@ public partial class PagePartie : ContentPage
     private async void RetourAuMenu(object sender, EventArgs e)
     {
         BoutonRetourMenu.IsEnabled = false;
+        if (!(imageVictoire.IsVisible || imageDefaite.IsVisible))
+            this.vm.Sauvegarde();
         await Shell.Current.GoToAsync("..");
         BoutonRetourMenu.IsEnabled = true;   
-    }
-
-    // Change le visuel de la couleur active
-    private void CouleurCliquee(object sender, EventArgs e)
-    {
-        if (sender is Button bouton && bouton != null)
-        {
-            if (CouleurPaletteActive != null)
-            {
-                // R�initialiser la bordure du bouton pr�c�demment s�lectionn�
-                CouleurPaletteActive.BorderColor = Colors.Transparent;
-                CouleurPaletteActive.BorderWidth = 0;
-            }
-
-            // Mise � jour du dernier bouton
-            CouleurPaletteActive = (Button)sender;
-
-            // Appliquer la bordure au nouveau bouton s�lectionn�
-            CouleurPaletteActive.BorderColor = Colors.White;
-            CouleurPaletteActive.BorderWidth = 3;
-        }
     }
 
 
@@ -233,14 +263,22 @@ public partial class PagePartie : ContentPage
             AppResources.app_popup_soumission_grille_btn_soumettre,
             AppResources.app_popup_soumission_grille_btn_annuler
         );
+        BoutonValidationGrille.IsEnabled = false;
         bool? soumettreGrille = (bool?) (await this.ShowPopupAsync(popup));
+
         if (soumettreGrille == true)
         {
             if (!vm.VerifierGrille())
                 AfficherPopupGrilleFausse();
             else
+            {
                 imageVictoire.IsVisible = true;
+                BoutonRetourAction.IsEnabled = false;
+                this.score.Stop();
+                this.vm.TerminerPartie();
+            }
         }
+        BoutonValidationGrille.IsEnabled = true;
     }
 
 
@@ -251,7 +289,8 @@ public partial class PagePartie : ContentPage
         if (!string.IsNullOrEmpty(texte))
         {
             CopierDansPressePapier(texte);
-            AfficherPopUpSuccesCopie();
+            if (!popupActive)
+                AfficherPopUpSuccesCopie();
         }
     }
 
@@ -260,7 +299,9 @@ public partial class PagePartie : ContentPage
     private async void AfficherPopupGrilleFausse()
     {
         PopupCustomTexteEtOk popup = new(AppResources.app_popup_grille_fausse);
+        popupActive = true;
         await this.ShowPopupAsync(popup);
+        popupActive = false;
     }
    
     // copie dans le presse papier le texte pass� en param�tre
@@ -273,7 +314,24 @@ public partial class PagePartie : ContentPage
     private async void AfficherPopUpSuccesCopie()
     {      
         PopupCustomTexteEtOk popup = new(AppResources.app_page_jeu_confirmation);
+        popupActive = true;
         await this.ShowPopupAsync(popup);
+        popupActive = false;
+    }
+
+    private async void AfficherPopupModeIndice()
+    {
+        PopupCustomTexteEtOk popup = new(AppResources.app_popup_mode_indice);
+        await this.ShowPopupAsync(popup);
+    }
+
+    // Préviens l'utilisateur de l'activation du mode indice
+    private void IndiceClique(object sender, EventArgs e)
+    {
+        if (vm.ModeIndice)
+        {
+            AfficherPopupModeIndice();
+        }
     }
 
     // Ouvre la page des options

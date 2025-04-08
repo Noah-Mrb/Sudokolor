@@ -1,6 +1,5 @@
 ﻿using VueModele;
 ﻿using System.Globalization;
-using Outils;
 using CommunityToolkit.Maui.Views;
 using Sudokolor.Popups;
 using Sudokolor.Resources.Strings;
@@ -39,6 +38,7 @@ namespace Sudokolor.Pages
         {
             base.OnAppearing();
             this.vm.MettreAJour();
+            ChangerBoutonDifficulte(Preferences.Get("difficulte", 0));
         }
 
         /// <summary>
@@ -50,11 +50,28 @@ namespace Sudokolor.Pages
             await this.LancerPartie();
         }
 
+        private async void ContreLaMontre(object sender, EventArgs e)
+        {
+            if (this.vm.PartieEnCours)
+            {
+                this.LancerNouvellePartie(true);
+            }
+            else
+            {
+                await this.LancerPartie(true);
+            }
+        }
+
         /// <summary>
         /// Lance une nouvelle partie
         /// </summary>
         /// <author>Valentin Colindre</author>
         private async void NouvellePartie(object sender, EventArgs e)
+        {
+            this.LancerNouvellePartie();
+        }
+
+        private async void LancerNouvellePartie(bool contreLaMontre = false)
         {
             PopupCustomBooleen popup = new PopupCustomBooleen(
                 AppResources.app_page_principale_abandon_popup,
@@ -65,19 +82,45 @@ namespace Sudokolor.Pages
             if (garder == false)
             {
                 this.vm.EffacerPartie();
-                this.LancerPartie();
+                await this.LancerPartie(contreLaMontre);
             }
+        }
+
+        //Change la difficulté dans les préférences de l'application
+        private async void ChangerDifficulte(object sender, EventArgs e)
+        {
+            int valeur = Convert.ToInt32(((Button)sender).Text);
+
+            Preferences.Set("difficulte", valeur);
+            ChangerBoutonDifficulte(valeur);
+        }
+
+        //change le bouton selectionné dans les difficultés
+        private void ChangerBoutonDifficulte(int difficulte)
+        {
+            foreach (Button bouton in GrilleDifficulte.Children)
+            {
+                if (bouton.Text == difficulte.ToString())
+                {
+                    bouton.Style = null;
+                }
+                else
+                {
+                    bouton.Style = (Style)Application.Current.Resources["Inactif"];
+                }
+            }
+            
         }
 
         /// <summary>
         /// Lance la partie
         /// </summary>
         /// <author>Valentin Colindre</author>
-        private async Task LancerPartie()
+        private async Task LancerPartie(bool contreLaMontre=false)
         {
             chargementBoutons(true);
 
-            ShellNavigationQueryParameters parametres = RecupererParametres();
+            ShellNavigationQueryParameters parametres = RecupererParametres(contreLaMontre);
 
             await Shell.Current.GoToAsync("Partie", parametres);
 
@@ -88,11 +131,12 @@ namespace Sudokolor.Pages
         /// Récupère les parametres du shell transmis pendant la navigation
         /// </summary>
         /// <author>Nordine HIDA</author>
-        private ShellNavigationQueryParameters RecupererParametres()
+        private ShellNavigationQueryParameters RecupererParametres(bool contreLaMontre=false)
         {
             ShellNavigationQueryParameters parametres = new();
 
             parametres["graine"] = vm.Graine;
+            parametres["contreLaMontre"] = contreLaMontre;
 
             return parametres;
         }
@@ -106,6 +150,19 @@ namespace Sudokolor.Pages
             chargementBoutons(true);
 
             await Shell.Current.GoToAsync("Options");
+
+            chargementBoutons(false);
+        }
+
+        /// <summary>
+        /// Ouvre la page de l'historique
+        /// </summary>
+        /// <author>Noah Mirbel</author>
+        private async void OuvrirHistorique(object sender, EventArgs e)
+        {
+            chargementBoutons(true);
+
+            await Shell.Current.GoToAsync("Historique");
 
             chargementBoutons(false);
         }
@@ -125,6 +182,7 @@ namespace Sudokolor.Pages
             BoutonReprendrePartie.IsEnabled = !etat;
             BoutonNouvellePartie.IsEnabled = !etat;
             BoutonOptions.IsEnabled = !etat;
+            BoutonHistorique.IsEnabled = !etat;
             RondDeChargement.IsRunning = etat;
         }
     }

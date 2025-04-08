@@ -57,8 +57,8 @@ namespace TestSudokolor.Outils
             Grille grilleNonFini = generateurAleatoire.GenererGrille();
             Grille grilleSolution = ObtenirSolution();
 
-            Assert.True(generateurAleatoire.VerifierGrille(new (grilleSolution,new(),"")));
-            Assert.False(generateurAleatoire.VerifierGrille(new (grilleNonFini,new(),"")));
+            Assert.True(generateurAleatoire.VerifierGrille(new (grilleSolution,new(),"", DIFFICULTE.FACILE, false, new())));
+            Assert.False(generateurAleatoire.VerifierGrille(new (grilleNonFini,new(),"", DIFFICULTE.FACILE, false, new())));
         }
 
         /// <summary>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resx="clr-namespace:Sudokolor.Resources.Strings"
+             xmlns:vm="clr-namespace:VueModele;assembly=VueModele"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Modele;assembly=Modele"
+             xmlns:convertisseurs="clr-namespace:Sudokolor.Convertisseurs"
+             x:Class="Sudokolor.Pages.PageHistorique"
+             xmlns:pages="clr-namespace:Sudokolor.Pages"
+             x:DataType="vm:HistoriqueVueModele"
+             Title="Historique" 
+             BackgroundImageSource="background_bois.jpeg">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <convertisseurs:ConvertisseurBooleenMode x:Key="ConvertisseurBooleenMode" />
+            <convertisseurs:ConvertisseurEtoile x:Key="ConvertisseurEtoile" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <VerticalStackLayout Spacing="30">
+            <Label 
+                Text="{x:Static resx:AppResources.app_page_historique_titre}" 
+                Style="{StaticResource Titre}" />
+            
+            <Label 
+                Grid.Row="1" Grid.Column="0" FontSize="20"
+                Text="{x:Static resx:AppResources.app_page_historique_vide}"
+                IsVisible="{Binding HistoriqueNonVide, Converter={StaticResource InvertedBoolConverter}}"/>
+
+            <ScrollView 
+                Grid.Row="1" Grid.Column="0" 
+                IsVisible="{Binding HistoriqueNonVide}" 
+                MaximumHeightRequest="300" 
+                VerticalScrollBarVisibility="Always">
+                <FlexLayout Direction="Column" 
+                AlignItems="Center"
+                JustifyContent="Start" 
+                BindableLayout.ItemsSource="{Binding PartiesHistorique}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="local:PartieHistorique">
+                            <Button Margin="0,5" HorizontalOptions="FillAndExpand" 
+                                    FontSize="20" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HistoriqueVueModele}}, Path=SelectionnerPartieCommand}"
+                                    CommandParameter="{Binding Graine}"
+                                    MinimumWidthRequest="400">
+                                <Button.Text>
+                                    <MultiBinding StringFormat="{}{0} : {1}">
+                                        <Binding Source="{x:Static resx:AppResources.app_page_jeu_score}" />
+                                        <Binding Path="Score"/>
+                                    </MultiBinding>
+                                </Button.Text>
+                            </Button>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </ScrollView>
+
+            <Button x:Name="BoutonDetails"
+                    IsVisible="{Binding DetailsVisible}" 
+                    VerticalOptions="EndAndExpand"
+                    Margin="0,20,0,0"
+                    Grid.Row="2"
+                    MinimumHeightRequest="300"
+                    LineBreakMode="WordWrap"
+                    Clicked="CopierGrainePressePapier">
+                <Button.Text>
+                    <MultiBinding StringFormat="{}{0} n°{1}&#x0a;{2} : {3:dd/MM/yyyy}&#x0a;{4} : {5}&#x0a;{6} : {7}&#x0a;{8} : {9}">
+                        <Binding Source="{x:Static resx:AppResources.app_page_historique_texte_bouton}" />
+                        <Binding Path="PartieSelectionnee.Graine"/>
+                        <Binding Source="{x:Static resx:AppResources.app_page_historique_texte_date}"/>
+                        <Binding Path="PartieSelectionnee.Date"/>
+                        <Binding Source="{x:Static resx:AppResources.app_page_historique_texte_difficulte}"/>
+                        <Binding Path="PartieSelectionnee.Difficulte" Converter="{StaticResource ConvertisseurEtoile}"/>
+                        <Binding Source="{x:Static resx:AppResources.app_page_jeu_score}"/>
+                        <Binding Path="PartieSelectionnee.Score"/>
+                        <Binding Source="{x:Static resx:AppResources.app_page_historique_texte_mode}"/>
+                        <Binding Path="PartieSelectionnee.ContreLaMontre" Converter="{StaticResource ConvertisseurBooleenMode}"/>
+                    </MultiBinding>
+                </Button.Text>
+            </Button>
+
+
+            <!-- Rond de chargement -->
+            <ActivityIndicator x:Name="RondDeChargement" IsRunning="False" 
+                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
+                Margin="0,20,0,0"/>
+            
+            
+        </VerticalStackLayout>
+
+        <Button 
+            Text="{x:Static resx:AppResources.app_page_historique_retour}"
+            Clicked="RetourAuMenu"
+            x:Name="BoutonRetourMenu"
+            VerticalOptions="EndAndExpand"
+            Grid.Row="3"
+            Margin="0,50,0,0" FlexLayout.AlignSelf="End" />
+    </Grid>
+</ContentPage>
